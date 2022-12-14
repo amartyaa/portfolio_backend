@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "portfolio-backend"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-19pmyawn25qds"
+s3_prefix = "portfolio-backend"
+region = "ap-south-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+disable_rollback = false
+image_repositories = []

@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: An example serverless API and worker written in Golang.
+Parameters: 
+  Stage: 
+    Type: String
+    Default: dev
+    AllowedValues: 
+      - dev
+      - prod
+Resources:
+  MyApiGateway:
+      Type: AWS::Serverless::Api
+      Properties:
+        Name: PortFolio Backend API
+        StageName: !Ref Stage
+  Api:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: go1.x
+      Handler: main
+      CodeUri: ./main.zip
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DynamoDBTable
+      Events:
+        RootHandler:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApiGateway
+            Path: '/'
+            Method: post
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: Time
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: Time
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+# Outputs:
+  # Endpoint:
+  #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
