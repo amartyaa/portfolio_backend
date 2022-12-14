@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -52,6 +54,7 @@ func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	return ApiResponse, nil
 }
 
+
 type api_response struct {
 	Name    string
 	Email   string
@@ -87,6 +90,7 @@ func dbHandler(body string) (*dynamodb.PutItemOutput, error) {
 		},
 		TableName: aws.String(os.Getenv("TABLE_NAME")),
 	}
+
 	result, err := svc.PutItem(input)
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
@@ -115,8 +119,8 @@ func dbHandler(body string) (*dynamodb.PutItemOutput, error) {
 		}
 
 	}
-	return result, err
 
+	return result, err
 }
 
 func main() {
